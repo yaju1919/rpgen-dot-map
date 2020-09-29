@@ -57,7 +57,7 @@ function getSpriteRPGEN(r,g,b){
     if(!obj[code]) return console.error("辞書が不十分です！");
     var min = 1, output = null;
     obj[code].forEach((v,i)=>{
-        var dif = diffColor([r,g,b],[v[0],v[1],v[2]]);
+        var dif = diffColor([r,g,b],[v[0],v[1],v[2]],inputDiffType());
         if(min < dif) return;
         min = dif;
         output = [v[3],v[4]];
@@ -80,18 +80,21 @@ var inputW = yaju1919.addInputNumber(h,{
     int : true,
     save : "w"
 });
-var inputH = yaju1919.addInputNumber(h,{
-    title : "高さ",
-    placeholder : "11.25 22.5 45",
-    max : 45,
-    min : 0,
-    int : true,
-    save : "h"
+var inputDiffType = yaju1919.addSelect(h,{
+    title: "色比較アルゴリズム",
+    list: {
+        "RGB表色系でのユークリッド距離による色差の計算" : 3,
+        "XYZ表色系でのユークリッド距離による色差の計算" : 2,
+        "L*a*b*表色系でのユークリッド距離による色差の計算" : 1,
+        "CIEDE2000による色差の計算" : 0
+    },
+    value: '0',
+    save: "diffType"
 });
 $("<button>").appendTo(h).text("画像選択").click(function(){
     $("<input>").attr({
         type: "file"
-    }).on("change",function(){
+    }).on("change",function(e){
         var file = e.target.files[0];
         if(!file) return;
         var blobUrl = window.URL.createObjectURL(file);
@@ -102,15 +105,20 @@ $("<button>").appendTo(h).text("画像選択").click(function(){
 });
 var h_output = $("<div>").appendTo(h);
 function main(img){
-    var _w = inputW(),
-        _h = inputH();
+    var _w = inputW();
+    var _h = Math.floor(_w * (img.height/img.width));
     var yuka = new Array(_h).fill().map(v=>new Array(_w).fill().map(v=>''));
     var mono = yuka.map(v=>v.slice());
     var cv = $("<canvas>").attr({
         width: _w,
         height: _h
-    });
+    }).appendTo("body");
     var ctx = cv.get(0).getContext('2d');
+    // ドットを滑らかにしないおまじない
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
     ctx.drawImage(img,0,0,img.width,img.height,0,0,_w,_h);
     var ImgData = ctx.getImageData(0,0,_w,_h);
     var d = ImgData.data;
@@ -121,6 +129,7 @@ function main(img){
         var output = getSpriteRPGEN(r,g,b);
         var x = (i / 4) % _h,
             y = Math.floor((i / 4) / _h);
+        if(!yuka[y]) break;
         yuka[y][x] = output[0];
         if(output[1]) mono[y][x] = output[1];
     }
@@ -133,10 +142,9 @@ function main(img){
         ar.push("#BGIMG\nhttp://i.imgur.com/qiN1und.jpg");
         ar.push("#FLOOR\n" + a);
         ar.push("#MAP\n" + b);
-        ar.map(v=>v + "#END");
-        var file = LZString.compressToEncodedURIComponent(ar.join("\n\n"));
+        var file = LZString.compressToEncodedURIComponent(ar.map(v=>v + "#END").join("\n\n"));
         var str = 'avascript:(function(){var map="' + file + '";(' + toStr(write) + ')();})();';
-        yaju1919.addInputText(h_output,{
+        yaju1919.addInputText(h_output.empty(),{
             value: str,
             textarea: true,
             readonly: true
