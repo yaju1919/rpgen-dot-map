@@ -98,7 +98,7 @@ $("<button>").appendTo(h).text("画像選択").click(function(){
         var img = new Image();
         img.onload = function(){ main(img); };
         img.src = blobUrl;
-    });
+    }).click();
 });
 var h_output = $("<div>").appendTo(h);
 function main(img){
