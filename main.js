@@ -13,12 +13,12 @@ function getTrendCode(r,g,b){
     if(Math.abs(r - b) <= margin) s += 'b';
     if(Math.abs(g - b) <= margin) s += 'c';
     var half = margin / 2;
-    if(r + half < b) s += 'd';
-    if(r > b + half) s += 'e';
-    if(r + half < g) s += 'f';
-    if(r > g + half) s += 'g';
-    if(g + half < b) s += 'h';
-    if(g > b + half) s += 'i';
+    if(r < b) s += 'd';
+    if(r > b) s += 'e';
+    if(r < g) s += 'f';
+    if(r > g) s += 'g';
+    if(g < b) s += 'h';
+    if(g > b) s += 'i';
     return s;
 }
 var dic = { // 色辞典
