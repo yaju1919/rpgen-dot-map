@@ -116,7 +116,7 @@ function main(img){
     var cv = $("<canvas>").attr({
         width: _w,
         height: _h
-    }).appendTo("body");
+    });
     var ctx = cv.get(0).getContext('2d');
     // ドットを滑らかにしないおまじない
     ctx.mozImageSmoothingEnabled = false;
