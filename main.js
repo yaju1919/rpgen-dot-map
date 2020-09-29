@@ -1,10 +1,10 @@
 var kuro = new Array(9).fill().map((v,i)=>11849+i);
 var siro = new Array(9).fill().map((v,i)=>11945-i);
 function getKuro(r,g,b){
-    return new Array(9).fill().map((v,i)=>(i+1)/10).reverse().map(v=>[r,g,b].map(v2=>v2*v));
+    return new Array(9).fill().map((v,i)=>(i+1)/10).reverse().map(v=>[r,g,b].map(v2=>v2*v).map(v=>Math.round(v)));
 }
 function getSiro(r,g,b){
-    return new Array(9).fill().map((v,i)=>(i+1)/10).map(v=>[r,g,b].map(v2=>v2+(255-v2)*v));
+    return new Array(9).fill().map((v,i)=>(i+1)/10).map(v=>[r,g,b].map(v2=>v2+(255-v2)*v).map(v=>Math.round(v)));
 }
 function getTrendCode(r,g,b){
     var _ = 10; // 許容誤差
@@ -23,14 +23,18 @@ function getTrendCode(r,g,b){
 var dic = { // 色辞典
     85 : [255, 255, 255],
     86 : [255, 0, 0],
+    92 : [0, 255, 0],
     87 : [0, 0, 255],
     88 : [255, 255, 0],
-    89 : [153, 0, 255],
     90 : [255, 0, 255],
-    91 : [255, 153, 0],
-    92 : [0, 255, 0],
     93 : [0, 255, 255],
     2408 : [0, 0, 0],
+    28477 : [128, 255, 0],
+    28478 : [128, 0, 255],
+    28479 : [0, 128, 255],
+    28480 : [255, 128, 0],
+    28481 : [255, 0, 128],
+    28482 : [0, 255, 128],
 };
 var obj = {};
 function add(r,g,b,yuka,mono){
@@ -54,7 +58,7 @@ Object.keys(dic).forEach(k=>{
 });
 function getSpriteRPGEN(r,g,b){
     var code = getTrendCode(r,g,b);
-    if(!obj[code]) return console.error("辞書が不十分です！");
+    if(!obj[code]) return [86,null];//console.error("辞書が不十分です！");
     var min = 1, output = null;
     obj[code].forEach((v,i)=>{
         var dif = diffColor([r,g,b],[v[0],v[1],v[2]],inputDiffType());
@@ -127,9 +131,8 @@ function main(img){
             g = d[i+1],
             b = d[i+2];
         var output = getSpriteRPGEN(r,g,b);
-        var x = (i / 4) % _h,
-            y = Math.floor((i / 4) / _h);
-        if(!yuka[y]) break;
+        var x = (i / 4) % _w,
+            y = Math.floor((i / 4) / _w);
         yuka[y][x] = output[0];
         if(output[1]) mono[y][x] = output[1];
     }
