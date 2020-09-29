@@ -7,17 +7,18 @@ function getSiro(r,g,b){
     return new Array(9).fill().map((v,i)=>(i+1)/10).map(v=>[r,g,b].map(v2=>v2+(255-v2)*v).map(v=>Math.round(v)));
 }
 function getTrendCode(r,g,b){
-    var _ = 10; // 許容誤差
+    var margin = 10; // 許容誤差
     var s = '';
-    if(Math.abs(r - g) <= _) s += 'a';
-    if(Math.abs(r - b) <= _) s += 'b';
-    if(Math.abs(g - b) <= _) s += 'c';
-    if(r + _ < b) s += 'd';
-    if(r > b + _) s += 'e';
-    if(r + _ < g) s += 'f';
-    if(r > g + _) s += 'g';
-    if(g + _ < b) s += 'h';
-    if(g > b + _) s += 'i';
+    if(Math.abs(r - g) <= margin) s += 'a';
+    if(Math.abs(r - b) <= margin) s += 'b';
+    if(Math.abs(g - b) <= margin) s += 'c';
+    var half = margin / 2;
+    if(r + half < b) s += 'd';
+    if(r > b + half) s += 'e';
+    if(r + half < g) s += 'f';
+    if(r > g + half) s += 'g';
+    if(g + half < b) s += 'h';
+    if(g > b + half) s += 'i';
     return s;
 }
 var dic = { // 色辞典
