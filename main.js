@@ -7,12 +7,10 @@ function getSiro(r,g,b){
     return new Array(9).fill().map((v,i)=>(i+1)/10).map(v=>[r,g,b].map(v2=>v2+(255-v2)*v).map(v=>Math.round(v)));
 }
 function getTrendCode(r,g,b){
-    var margin = 10; // 許容誤差
     var s = '';
-    if(Math.abs(r - g) <= margin) s += 'a';
-    if(Math.abs(r - b) <= margin) s += 'b';
-    if(Math.abs(g - b) <= margin) s += 'c';
-    var half = margin / 2;
+    if(r === g) s += 'a';
+    if(r === b) s += 'b';
+    if(g === b) s += 'c';
     if(r < b) s += 'd';
     if(r > b) s += 'e';
     if(r < g) s += 'f';
