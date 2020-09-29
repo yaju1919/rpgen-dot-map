@@ -58,7 +58,7 @@ Object.keys(dic).forEach(k=>{
 });
 function getSpriteRPGEN(r,g,b){
     var code = getTrendCode(r,g,b);
-    if(!obj[code]) return [86,null];//console.error("辞書が不十分です！");
+    if(!obj[code]) console.error("辞書が不十分です！");
     var min = 1, output = null;
     obj[code].forEach((v,i)=>{
         var dif = diffColor([r,g,b],[v[0],v[1],v[2]],inputDiffType());
