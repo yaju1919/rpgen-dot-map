@@ -57,7 +57,7 @@ Object.keys(dic).forEach(k=>{
 });
 function getSpriteRPGEN(r,g,b){
     var code = getTrendCode(r,g,b);
-    if(!obj[code]) console.error("辞書が不十分です！");
+    if(!obj[code]) return console.error("辞書が不十分です！");
     var min = 1, output = null;
     obj[code].forEach((v,i)=>{
         var dif = diffColor([r,g,b],[v[0],v[1],v[2]],inputDiffType());
@@ -65,7 +65,6 @@ function getSpriteRPGEN(r,g,b){
         min = dif;
         output = [v[3],v[4]];
     });
-    if(!output) return console.error("起こるはずの無いエラー");
     return output;
 }
 //--------------------------------------------------------
@@ -130,6 +129,7 @@ function main(img){
             g = d[i+1],
             b = d[i+2];
         var output = getSpriteRPGEN(r,g,b);
+        if(!output) return alert("エラーデス！");
         var x = (i / 4) % _w,
             y = Math.floor((i / 4) / _w);
         yuka[y][x] = output[0];
