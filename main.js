@@ -63,7 +63,7 @@ function getSpriteRPGEN(r,g,b){
         var dif = diffColor([r,g,b],[v[0],v[1],v[2]],inputDiffType());
         if(min < dif) return;
         min = dif;
-        output = [v[3],v[4]];
+        output = v;
     });
     return output;
 }
@@ -116,14 +116,21 @@ function main(img){
         height: _h
     });
     var ctx = cv.get(0).getContext('2d');
+    var cv2 = $("<canvas>").attr({
+        width: _w * 9,
+        height: _h * 9
+    });
+    var ctx2 = cv2.get(0).getContext('2d');
     // ドットを滑らかにしないおまじない
-    ctx.mozImageSmoothingEnabled = false;
-    ctx.webkitImageSmoothingEnabled = false;
-    ctx.msImageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
+    [ctx,ctx2].forEach(v=>{
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.webkitImageSmoothingEnabled = false;
+        ctx.msImageSmoothingEnabled = false;
+        ctx.imageSmoothingEnabled = false;
+    });
     ctx.drawImage(img,0,0,img.width,img.height,0,0,_w,_h);
-    var ImgData = ctx.getImageData(0,0,_w,_h);
-    var d = ImgData.data;
+    var imgData = ctx.getImageData(0,0,_w,_h);
+    var d = imgData.data;
     for(var i = 0; i < d.length; i+=4){
         var r = d[i],
             g = d[i+1],
@@ -132,9 +139,15 @@ function main(img){
         if(!output) return alert("エラーデス！");
         var x = (i / 4) % _w,
             y = Math.floor((i / 4) / _w);
-        yuka[y][x] = output[0];
-        if(output[1]) mono[y][x] = output[1];
+        yuka[y][x] = output[3];
+        if(output[1]) mono[y][x] = output[4];
+        d[i] = output[0];
+        d[i+1] = output[1];
+        d[i+2] = output[2];
     }
+    ctx.clearRect(0, 0, _w, _h);
+    ctx.putImageData(imgData, 0, 0);
+    ctx2.drawImage(cv.get(0),0,0,_w,_h,0,0,_w * 9,_h * 9);
     (function(){
         var a = yuka.map(line=>line.join(' ')).join('\n');
         var b = mono.map(line=>line.join(' ')).join('\n');
@@ -146,7 +159,7 @@ function main(img){
         ar.push("#MAP\n" + b);
         var file = LZString.compressToEncodedURIComponent(ar.map(v=>v + "#END").join("\n\n"));
         var str = 'avascript:(function(){var map="' + file + '";(' + toStr(write) + ')();})();';
-        yaju1919.addInputText(h_output.empty(),{
+        yaju1919.addInputText(h_output.empty().append(cv2),{
             value: str,
             textarea: true,
             readonly: true
