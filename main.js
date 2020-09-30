@@ -122,7 +122,7 @@ function main(img){
     });
     var ctx2 = cv2.get(0).getContext('2d');
     // ドットを滑らかにしないおまじない
-    [ctx,ctx2].forEach(v=>{
+    [ctx,ctx2].forEach(ctx=>{
         ctx.mozImageSmoothingEnabled = false;
         ctx.webkitImageSmoothingEnabled = false;
         ctx.msImageSmoothingEnabled = false;
