@@ -74,7 +74,7 @@ var h = $("<div>").appendTo($("body")).css({
     padding: "1em"
 });
 $("<h1>",{text:"RPGENのドット絵MAPメーカー"}).appendTo(h);
-$("<div>",{text:"色を選択してください。"}).appendTo(h);
+$("<div>",{text:"元の画像に使われている色によっては正常に変換できない場合があります。"}).appendTo(h);
 var inputW = yaju1919.addInputNumber(h,{
     title : "幅",
     placeholder : "15 30 60",
