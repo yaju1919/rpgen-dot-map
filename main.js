@@ -157,26 +157,10 @@ function main(img){
         ar.push("#BGIMG\nhttp://i.imgur.com/qiN1und.jpg");
         ar.push("#FLOOR\n" + a);
         ar.push("#MAP\n" + b);
-        var file = LZString.compressToEncodedURIComponent(ar.map(v=>v + "#END").join("\n\n"));
-        var str = 'avascript:(function(){var map="' + file + '";(' + toStr(write) + ')();})();';
         yaju1919.addInputText(h_output.empty().append(cv2),{
-            value: str,
+            value: window.Bookmarklet.writeMapData(ar.map(v=>v + "#END").join("\n\n"))[1],
             textarea: true,
             readonly: true
         });
     })();
-}
-function toStr(func){ // 関数を文字列化
-    return String(func).replace(/\/\/.*\n/g,'');
-}
-function write(){
-    $.post(dqSock.getRPGBase() + 'cons/writeMapText.php',{
-        token: g_token,
-        index: parseInt(dq.mapNum),
-        mapText: (dq.bOpenScr ? '' : 'L1') + map,
-    }).done(function(r){
-        if ( r != 0 ) apprise("error");
-    }).fail(function(){
-        apprise("error");
-    });
 }
