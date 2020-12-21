@@ -77,7 +77,7 @@ $("<div>",{text:"元の画像に使われている色によっては正常に変
 var inputW = yaju1919.addInputNumber(h,{
     title : "幅",
     placeholder : "15 30 60",
-    max : 60,
+    max : 300,
     min : 0,
     int : true,
     save : "w"
